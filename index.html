@@ -15,17 +15,19 @@
                 <img src="https://reytiz.com/images/br_lite.jpg" class="card-img-top" alt="...">
                 <div class="card-body">
                   <h5 class="card-title">Проект Блек раша (пример взят у редиса) <span class="badge text-bg-danger">СКИДКА</span></h5>
-                  <p class="card-text">Готовый к запуску мод с хостингом, кастомизацией, лаунчером, фиком багов и множеством функций (исходники и pwn не включены).</p>
+                  <p class="card-text">Готовый к запуску мод с хостингом, кастомизацией, лаунчером, фиксом багов и множеством функций (исходники и pwn не включены).</p>
                 </div>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">Цена: <b>499 RUB</b></li>
                     <li class="list-group-item">Время выполнения: <b>24 часа</b></li>
+                    <li class="list-group-item">Тип: <b>Цифровой продукт</b></li>
                     <li class="list-group-item">
                         <form>
                             <input type="hidden" id="price" name="price" value="499"/>
                             <input type="hidden" id="Name" name="Name" value="Проект Блек раша"/>
                             <input type="hidden" id="desk" name="desk" value="Проект Блек раша"/>
-                           <button type="button" onclick="getFormData(this)" class="btn btn-success">Купить</button>
+                            <input type="hidden" id="type" name="type" value="digital"/> <!-- Тип товара -->
+                            <button type="button" onclick="getFormData(this)" class="btn btn-success">Купить</button>
                         </form>
                     </li>
                   </ul>
@@ -40,12 +42,13 @@
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">Цена: <b>200 RUB</b></li>
                     <li class="list-group-item">Время доставки: <b>24 часа</b></li>
-                    <li class="list-group-item">Количество сайтов: <b>1</b></li>
+                    <li class="list-group-item">Тип: <b>Файл</b></li>
                     <li class="list-group-item">
                         <form>
                             <input type="hidden" id="price" name="price" value="200"/>
                             <input type="hidden" id="Name" name="Name" value="ФИКС СТИЛЬ БР"/>
                             <input type="hidden" id="desk" name="desk" value="Стиль формума блек раша с фиксом плажки"/>
+                            <input type="hidden" id="type" name="type" value="file"/> <!-- Тип товара -->
                             <button type="button" onclick="getFormData(this)" class="btn btn-success">Купить</button>
                         </form>
                     </li>
@@ -64,23 +67,20 @@
 
     tg.expand();
 
-    // Функция для вывода сообщений в консоль на странице
     function logToConsole(message, isError = false) {
         const consoleDiv = document.getElementById('console');
         const logEntry = document.createElement('div');
         logEntry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
         logEntry.className = isError ? 'console-error' : 'console-log';
         consoleDiv.appendChild(logEntry);
-        consoleDiv.scrollTop = consoleDiv.scrollHeight; // Прокрутка вниз
+        consoleDiv.scrollTop = consoleDiv.scrollHeight;
     }
 
-    // Перехватываем ошибки
     window.onerror = function(msg, url, lineNo, columnNo, error) {
         logToConsole(`Ошибка: ${msg} (строка: ${lineNo}, столбец: ${columnNo})`, true);
         return false;
     };
 
-    // Логируем успешную инициализацию
     logToConsole("Telegram WebApp инициализирован");
 
     function getFormData(button) {
@@ -94,18 +94,17 @@
             let data = {
                 name: formData.get('Name'),
                 price: formData.get('price'),
-                description: formData.get('desk')
+                description: formData.get('desk'),
+                type: formData.get('type') // Добавляем тип
             };
 
-            // Проверка данных
-            if (!data.name || !data.price || !data.description) {
+            if (!data.name || !data.price || !data.description || !data.type) {
                 throw new Error("Некорректные данные формы");
             }
 
-            logToConsole(`Данные формы: name=${data.name}, price=${data.price}, description=${data.description}`);
+            logToConsole(`Данные формы: name=${data.name}, price=${data.price}, description=${data.description}, type=${data.type}`);
             tg.sendData(JSON.stringify(data));
             logToConsole("Данные отправлены в бота");
-            //tg.close(); // Оставляем закомментированным, чтобы не закрывать MiniApp
         } catch (error) {
             logToConsole(`Ошибка: ${error.message}`, true);
         }
